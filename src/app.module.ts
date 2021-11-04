@@ -1,6 +1,8 @@
+import { UserModule } from './user/user.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './core/auth/auth.module';
@@ -10,7 +12,24 @@ import { UnauthorizedExceptionFilter } from './core/exeptionFilters/Unauthorized
 import { IsCpfValidoConstraint } from './core/validator/IsCpfValido.validator';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule],
+  imports: [
+    UserModule,
+    AuthModule,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mongodb',
+        url: configService.get<string>('MONGODB_URL'),
+        // url:'mongodb+srv://<admin>:<password>@chnirt-graphql-apollo-vg0hq.mongodb.net/nest?retryWrites=true&w=majority',
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        useNewUrlParser: true,
+        logging: true,
+      }),
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [AppController],
   providers: [
     AppService,
