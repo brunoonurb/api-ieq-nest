@@ -31,7 +31,6 @@ export class UnauthorizedExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       status,
       message: 'Não autorizado',
-      error: 'Unauthorized',
       path: request.url,
     });
   }

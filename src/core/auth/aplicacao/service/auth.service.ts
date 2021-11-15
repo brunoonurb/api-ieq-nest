@@ -1,27 +1,25 @@
-import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Crypt } from 'src/core/utils/Crypt';
+import { UsersRepository } from 'src/user/infra/repository/monngoDb/Users.repository';
+import { AuthLoginCommand } from '../../dominio/command/auth-login.command';
 
 @Injectable()
 export class AuthService {
   constructor(
-    // private usersService: UsersService,
+    private readonly usersRepository: UsersRepository,
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string): Promise<any> {
+  async validateUser(emailValidate: string): Promise<any> {
     try {
-      // const user = buscar dados no bnco de daodos;
-      const user = {
-        email: 'dev10@lwtecnologia.com.br',
-        name: 'bruno',
-        profile: 'Adm',
-        sector: 'Adm',
-        sectorsActuated: ['ebd', 'adm'],
-        sub: '212321324',
-      };
+      const user = await this.usersRepository.searchByEmail(emailValidate);
 
-      if (user && user.email === email) {
+      if (user && user.email === emailValidate) {
         return user;
       }
       return null;
@@ -30,14 +28,27 @@ export class AuthService {
     }
   }
 
-  async login(user: any) {
+  async login(userLogin: AuthLoginCommand) {
+    const user = await this.usersRepository.searchByEmail(userLogin.email);
+
+    if (!user)
+      throw new HttpException('Email incorreto!', HttpStatus.UNAUTHORIZED);
+
+    const { name, email, password, sector, profile, sectorsActuated, id } =
+      user;
+
+    const crypt = new Crypt();
+    const passwordOk = await crypt.compareSync(userLogin.password, password)
+    if (!user || !passwordOk)
+      throw new HttpException('Senha incorreta!', HttpStatus.UNAUTHORIZED);
+
     const payload = {
-      email: 'dev10@lwtecnologia.com.br',
-      name: 'bruno',
-      profile: 'Adm',
-      sector: 'Adm',
-      sectorsActuated: ['ebd', 'adm'],
-      sub: '212321324',
+      name,
+      email,
+      profile,
+      sector,
+      sectorsActuated,
+      sub: id,
     };
     return {
       token: this.jwtService.sign(payload),

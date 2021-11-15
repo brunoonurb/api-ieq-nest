@@ -1,17 +1,16 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-
-import { AuthService } from '../service/auth.service';
-import { AuthLoginDto } from '../../dominio/dto/auth-login.dto';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthLoginCommand } from '../../dominio/command/auth-login.command';
+import { AuthService } from '../service/auth.service';
 
-@ApiTags('Autenticação')
+@ApiTags('Authentication')
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
-  @ApiOperation({ summary: 'Realizar login no sistema' })
-  async login(@Body() authLoginDto: AuthLoginDto) {
+  @ApiOperation({ summary: 'Log in to the system' })
+  async login(@Body() authLoginDto: AuthLoginCommand) {
     return this.authService.login(authLoginDto);
   }
 }

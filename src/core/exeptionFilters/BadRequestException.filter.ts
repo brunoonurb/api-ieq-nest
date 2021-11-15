@@ -33,7 +33,6 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       status,
       message: messageBody.message,
-      error: 'Bad Request',
       path: request.url,
     });
   }

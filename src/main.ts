@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +19,7 @@ async function bootstrap() {
     .setTitle('API IEQ')
     .setDescription('API com serviços da ieq centenario')
     .setVersion('1.0')
-    .addTag('CNH')
+    .addTag('API')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -28,5 +28,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   await app.listen(4001);
+  // Logger.log(`🚀 Server running on http://localhost:4001`, 'Bootstrap');
 }
 bootstrap();

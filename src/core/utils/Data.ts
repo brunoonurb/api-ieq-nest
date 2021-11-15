@@ -39,6 +39,9 @@ export class Data {
   public getDataHoraEua() {
     return moment(this.date).format('YYYY-MM-DD HH:mm:ss');
   }
+  public valueOf() {
+    return moment(this.date).valueOf();
+  }
 }
 
 const ehValida = (data: Date) => moment(data).isValid();

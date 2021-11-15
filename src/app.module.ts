@@ -1,4 +1,4 @@
-import { UserModule } from './user/user.module';
+import { UserModule } from './user/User.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -21,7 +21,6 @@ import { IsCpfValidoConstraint } from './core/validator/IsCpfValido.validator';
       useFactory: async (configService: ConfigService) => ({
         type: 'mongodb',
         url: configService.get<string>('MONGODB_URL'),
-        // url:'mongodb+srv://<admin>:<password>@chnirt-graphql-apollo-vg0hq.mongodb.net/nest?retryWrites=true&w=majority',
         entities: ['dist/**/*.entity{.ts,.js}'],
         synchronize: true,
         useNewUrlParser: true,
