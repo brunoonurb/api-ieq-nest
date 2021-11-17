@@ -1,14 +1,13 @@
 import {
   Body,
   Controller,
-  Get,
-  HttpException,
-  Param,
+  Delete,
+  Get, Param,
   Post,
   Put,
   Query,
   Request,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
@@ -80,5 +79,11 @@ export class UserController {
     const result = await this.service.search(id);
 
     return result;
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Register user' })
+  async delete(@Param('id') id: string) {
+    return this.service.delete(id);
   }
 }

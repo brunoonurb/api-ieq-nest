@@ -64,13 +64,25 @@ export class UserService {
     }
 
     const crypt = new Crypt();
-    const { password } = updateUser;
+    const { password, email } = updateUser;
+
+    if (email !== undefined && email !== userAlreadyExists.email) {
+      const userEmailAlreadyExists = await this.usersRepository.searchByEmail(
+        updateUser.email,
+      );
+      if (userEmailAlreadyExists) {
+        throw new HttpException('Email já cadastrado', HttpStatus.NOT_FOUND);
+      }
+    }
 
     if (password !== undefined) {
       const passwordHash = await crypt.hash(password, 10);
-      updateUser.password = passwordHash
+      updateUser.password = passwordHash;
     }
-    const updateUserMerge = this.usersRepository.merge(userAlreadyExists, updateUser);
+    const updateUserMerge = this.usersRepository.mergeCuston(
+      userAlreadyExists,
+      updateUser,
+    );
 
     const result = await this.usersRepository.alter(updateUserMerge);
 
@@ -91,5 +103,23 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async delete(id: string): Promise<void> {
+    const userAlreadyExists = await this.usersRepository.search(id);
+
+    if (!userAlreadyExists) {
+      throw new HttpException('Usário não encotrado', HttpStatus.NOT_FOUND);
+    }
+
+    const result = await this.usersRepository.deleteCuston(id);
+
+    if (!result) {
+      throw new HttpException(
+        'Não possível excluir usuário',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    throw new HttpException('Usuário excluido com sucesso', HttpStatus.OK);
   }
 }

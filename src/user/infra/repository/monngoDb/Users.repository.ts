@@ -3,7 +3,11 @@ import { PaginationOptions } from 'src/core/pagination/Pagination.options';
 import { CreateUserCommand } from 'src/user/dominio/command/CreateUser.command';
 import { UpdateUserCommand } from 'src/user/dominio/command/UpdateUser.command';
 import { User } from 'src/user/dominio/user.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import {
+  DeleteResult,
+  EntityRepository,
+  Repository
+} from 'typeorm';
 
 @Injectable()
 @EntityRepository(User)
@@ -24,7 +28,6 @@ class UsersRepository extends Repository<User> {
       return false;
     }
   }
-  
 
   list(pageOptions: PaginationOptions): Promise<[User[], number]> {
     return this.findAndCount({
@@ -49,6 +52,20 @@ class UsersRepository extends Repository<User> {
     return this.findOne({
       where: { email, password },
     });
+  }
+
+  deleteCuston(id: string): Promise<DeleteResult> | boolean {
+    try {
+      return this.delete({
+        id,
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  mergeCuston(mergeIntoEntity: User, entityLikes): User {
+    return this.merge(mergeIntoEntity, entityLikes);
   }
 }
 
