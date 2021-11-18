@@ -10,6 +10,10 @@ import { BadRequestExceptionFilter } from './core/exeptionFilters/BadRequestExce
 import { HttpExceptionFilter } from './core/exeptionFilters/HttpException.filter';
 import { UnauthorizedExceptionFilter } from './core/exeptionFilters/UnauthorizedException.filter';
 import { IsCpfValidoConstraint } from './core/validator/IsCpfValido.validator';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { ExampleService } from './mail/aplicacao/service/mail.service';
+import { MailController } from './mail/aplicacao/controller/mail.controller';
 
 @Module({
   imports: [
@@ -28,9 +32,35 @@ import { IsCpfValidoConstraint } from './core/validator/IsCpfValido.validator';
       }),
       inject: [ConfigService],
     }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory:async (configService: ConfigService) => ({
+        transport: {
+          port: 587,
+          host:configService.get<string>('MAIL_HOST'),
+          secure: false, // upgrade later with STARTTLS
+          auth: {
+             user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASS'),
+          },
+        },
+        defaults: {
+          from: 'IEQ-CENTENARIO" 🌏 " <ieqcentenario.ti@gmail.com>',
+        },
+        template: {
+          dir: process.cwd() + '/templates/',
+          adapter: new HandlebarsAdapter(),
+          options: {
+            secure: true, // use SSL
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, MailController],
   providers: [
+    ExampleService,
     AppService,
     {
       provide: APP_FILTER,

@@ -20,6 +20,7 @@ async function bootstrap() {
     .setDescription('API com serviços da ieq centenario')
     .setVersion('1.0')
     .addTag('API')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

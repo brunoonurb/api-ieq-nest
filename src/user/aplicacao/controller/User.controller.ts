@@ -9,7 +9,7 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { ExceptionQuery } from 'src/core/exeptionFilters/query/Exception.query';
 import { PaginationDto } from 'src/core/pagination/dto/Pagination.dto';
@@ -23,20 +23,22 @@ import { ListUserCommand } from '../../dominio/command/ListUser.command';
 import { UserService } from '../service/User.service';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @Controller({ path: 'users', version: '1' })
 export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Post('/')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Register user' })
   async create(@Body() user: CreateUserCommand) {
     return this.service.create(user);
   }
 
   @Put('/:id')
-  @ApiOperation({ summary: 'Register user' })
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update user' })
   async update(@Param('id') id: string, @Body() user: UpdateUserCommand) {
-    //fazer um valide de emaiil para update
     return this.service.update(id, user);
   }
 
