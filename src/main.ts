@@ -28,7 +28,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  await app.listen(4001);
+  await app.listen(process.env.PORT || 3000);
   // Logger.log(`🚀 Server running on http://localhost:4001`, 'Bootstrap');
 }
 bootstrap();
