@@ -1,4 +1,3 @@
-import { UserModule } from './user/User.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -14,6 +13,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ExampleService } from './mail/aplicacao/service/mail.service';
 import { MailController } from './mail/aplicacao/controller/mail.controller';
+import { UserModule } from './user/User.module';
 
 @Module({
   imports: [
@@ -32,6 +32,12 @@ import { MailController } from './mail/aplicacao/controller/mail.controller';
       }),
       inject: [ConfigService],
     }),
+    // BullModule.forRoot({
+    //   redis: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //   },
+    // }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory:async (configService: ConfigService) => ({
