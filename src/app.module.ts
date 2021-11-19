@@ -13,7 +13,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ExampleService } from './mail/aplicacao/service/mail.service';
 import { MailController } from './mail/aplicacao/controller/mail.controller';
-import { UserModule } from './user/User.module';
+import { UserModule } from './user/uuser.module';
 
 @Module({
   imports: [
