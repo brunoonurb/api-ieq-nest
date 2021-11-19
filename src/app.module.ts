@@ -1,3 +1,5 @@
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -9,16 +11,14 @@ import { BadRequestExceptionFilter } from './core/exeptionFilters/BadRequestExce
 import { HttpExceptionFilter } from './core/exeptionFilters/HttpException.filter';
 import { UnauthorizedExceptionFilter } from './core/exeptionFilters/UnauthorizedException.filter';
 import { IsCpfValidoConstraint } from './core/validator/IsCpfValido.validator';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { ExampleService } from './mail/aplicacao/service/mail.service';
-import { MailController } from './mail/aplicacao/controller/mail.controller';
+import { MailModule } from './mail/Mail.module';
 import { UserModule } from './user/User.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    MailModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -32,12 +32,6 @@ import { UserModule } from './user/User.module';
       }),
       inject: [ConfigService],
     }),
-    // BullModule.forRoot({
-    //   redis: {
-    //     host: 'localhost',
-    //     port: 6379,
-    //   },
-    // }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory:async (configService: ConfigService) => ({
@@ -64,10 +58,9 @@ import { UserModule } from './user/User.module';
       inject: [ConfigService],
     }),
   ],
-  controllers: [AppController, MailController],
+  controllers: [AppController],
   providers: [
-    ExampleService,
-    AppService,
+        AppService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

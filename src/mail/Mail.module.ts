@@ -1,3 +1,18 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailController } from './aplicacao/controller/Mail.controller';
+import { MailService } from './aplicacao/service/Mail.service';
+import { MailRepository } from './infra/repository/monngoDb/Mail.repository';
+import { SenMailService } from './infra/service/mailer/SenMail.service';
+
+@Module({
+  imports:  [TypeOrmModule.forFeature([MailRepository])],
+  controllers: [MailController],
+  providers: [MailService, SenMailService],
+})
+export class MailModule {}
+
+
 // import * as path from 'path';
 // import { Module } from '@nestjs/common';
 // import { BullModule } from 'nest-bull';
