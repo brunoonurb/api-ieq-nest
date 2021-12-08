@@ -7,19 +7,22 @@ export class SenMailService {
   constructor(private readonly mailerService: MailerService) {}
 
   async send(mailOptions: SendMailCommand<object>) {
+    const { to, subject, template, context } = mailOptions;
     try {
       const { response } = await this.mailerService.sendMail({
-        to: mailOptions.to, // list of receivers
+        to: to, // list of receivers
         from: 'IEQ-CENTENARIO" 🌏 " <ieqcentenario.ti@gmail.com>', // sender address
-        subject: mailOptions.subject, // Subject line
-        html: '<b>welcome html</b>', // HTML body content
+        subject: subject, // Subject line
+        // html: '<b>welcome html</b>', // HTML body content
+        template: template, // The `.pug` or `.hbs` extension is appended automatically.
+        context: context,
       });
 
       return {
         responseCode: 250,
         response,
-        to: mailOptions.to,
-        subject: mailOptions.subject,
+        to: to,
+        subject: subject,
       };
     } catch (error) {
       const { response: result, responseCode: status } = error;
@@ -28,51 +31,9 @@ export class SenMailService {
       return {
         responseCode,
         response,
-        to: mailOptions.to,
-        subject: mailOptions.subject,
+        to: to,
+        subject: subject,
       };
     }
-  }
-
-  public example2(): void {
-    this.mailerService
-      .sendMail({
-        to: 'brupedroso17@gmail.com',
-        from: 'noreply@nestjs.com',
-        subject: 'Testing Nest Mailermodule with template ✔',
-        template: 'index', // The `.pug` or `.hbs` extension is appended automatically.
-        context: {
-          // Data to be sent to template engine.
-          code: 'cf1a3f828287',
-          username: 'john doe',
-        },
-      })
-      .then((success) => {
-        console.log(success);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  public example3(): void {
-    this.mailerService
-      .sendMail({
-        to: 'test@nestjs.com',
-        from: 'noreply@nestjs.com',
-        subject: 'Testing Nest Mailermodule with template ✔',
-        template: '/index', // The `.pug` or `.hbs` extension is appended automatically.
-        context: {
-          // Data to be sent to template engine.
-          code: 'cf1a3f828287',
-          username: 'john doe',
-        },
-      })
-      .then((success) => {
-        console.log(success);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 }

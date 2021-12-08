@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PaginationOptions } from 'src/core/pagination/Pagination.options';
-import {
-  CreateSendMailCommand
-} from 'src/mail/dominio/command/CreateSendMail.command';
+import { CreateSendMailCommand } from 'src/mail/dominio/command/CreateSendMail.command';
 import { Mail } from 'src/mail/dominio/Mail.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
@@ -20,6 +18,9 @@ class MailRepository extends Repository<Mail> {
 
   list(pageOptions: PaginationOptions): Promise<[Mail[], number]> {
     return this.findAndCount({
+      order: {
+        created_at: 'DESC',
+      },
       skip: pageOptions.pageActual,
       take: pageOptions.limit,
     });

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Pagination } from 'src/core/pagination/Pagination';
 import { PaginationOptions } from 'src/core/pagination/Pagination.options';
-import { IContextRegisterUserCommand } from 'src/mail/dominio/command/IContextRegisterUser.command';
+import { IContextRegisterUserCommand, IForgotPasswordCommand } from 'src/mail/dominio/command/IContextRegisterUser.command';
 import { SendMailCommand } from 'src/mail/dominio/command/SendMaill.command';
 import { MailRepository } from 'src/mail/infra/repository/monngoDb/Mail.repository';
 import { SenMailService } from 'src/mail/infra/service/mailer/SenMail.service';
@@ -13,8 +13,8 @@ export class MailService {
     private readonly mailRepository: MailRepository,
   ) {}
 
-  async sendRegisterUser(
-    mailOptions: SendMailCommand<IContextRegisterUserCommand>,
+  async sending(
+    mailOptions: SendMailCommand<IContextRegisterUserCommand | IForgotPasswordCommand>,
   ) {
     const resultSend = await this.senMailService.send(mailOptions);
 

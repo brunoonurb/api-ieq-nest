@@ -1,4 +1,4 @@
-import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class SendMailCommand<EntityContextMail> {
@@ -24,7 +24,7 @@ export class SendMailCommand<EntityContextMail> {
     to: string,
     subject: string,
     template: string,
-    context: EntityContextMail,
+    context?: EntityContextMail,
   ) {
     this.to = to;
     this.subject = subject;

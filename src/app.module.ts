@@ -16,9 +16,9 @@ import { UserModule } from './user/User.module';
 
 @Module({
   imports: [
-    UserModule,
-    AuthModule,
     MailModule,
+    AuthModule,
+    UserModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,31 +29,6 @@ import { UserModule } from './user/User.module';
         synchronize: true,
         useNewUrlParser: true,
         logging: true,
-      }),
-      inject: [ConfigService],
-    }),
-    MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory:async (configService: ConfigService) => ({
-        transport: {
-          port: 587,
-          host:configService.get<string>('MAIL_HOST'),
-          secure: false, // upgrade later with STARTTLS
-          auth: {
-             user: configService.get<string>('MAIL_USER'),
-            pass: configService.get<string>('MAIL_PASS'),
-          },
-        },
-        defaults: {
-          from: 'IEQ-CENTENARIO" 🌏 " <ieqcentenario.ti@gmail.com>',
-        },
-        template: {
-          dir: process.cwd() + '/templates/',
-          adapter: new HandlebarsAdapter(),
-          options: {
-            secure: true, // use SSL
-          },
-        },
       }),
       inject: [ConfigService],
     }),

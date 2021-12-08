@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Query, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Query,
+  Request,
+  UseGuards
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { ExceptionQuery } from 'src/core/exeptionFilters/query/Exception.query';
 import { PaginationDto } from 'src/core/pagination/dto/Pagination.dto';
 import { Pagination } from 'src/core/pagination/Pagination';
@@ -15,37 +23,18 @@ import { MailService } from '../service/Mail.service';
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @Get('/sendRegisterUser')
-  @ApiOperation({ summary: 'send email' })
-  async sendRegisterUser(
+  @Get('/send')
+  @ApiOperation({ summary: 'send email ' })
+  @UseGuards(JwtAuthGuard)
+  async sending(
     @Body() sendMailCommand: SendMailCommand<IContextRegisterUserCommand>,
   ) {
-    // return 'hello'
-    const result = await this.mailService.sendRegisterUser(sendMailCommand);
-    console.log('resultado');
-    console.log(result);
-    return sendMailCommand;
-  }
-
-  @Get('/send')
-  @ApiOperation({ summary: 'send email' })
-  async send(@Body() ob) {
-    const context = { name: 'string;', email: 'string', password: 'string' };
-    const sendMailCommand = new SendMailCommand<IContextRegisterUserCommand>(
-      'teste send ',
-      ' string',
-      ' string',
-      context,
-    );
-    const result = await this.mailService.sendRegisterUser(sendMailCommand);
-    console.log('resultado');
-    console.log(result);
-
-    return sendMailCommand;
+    const result = await this.mailService.sending(sendMailCommand);
+    return result;
   }
 
   @Get('/')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'List mail send' })
   @ApiResponse({ status: 200, description: 'Paged result', type: Pagination })
   @ApiResponse({
@@ -55,7 +44,6 @@ export class MailController {
   })
   async list(
     @Query() paginationDTO: PaginationDto,
-    @Request() request: RequestDto,
   ): Promise<Pagination<Mail>> {
     const { pageActual, limit } = paginationDTO;
 

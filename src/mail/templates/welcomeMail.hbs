@@ -1,0 +1,55 @@
+
+<style>
+    .contanier{
+        width: 800px;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        display: flex;
+        flex-direction: column;
+    }
+    .link{
+        padding: 10px;
+        background: #8257e6;
+        color: #fff;
+        border-radius: 6px;
+        text-align: center;
+    }
+    .info {
+        display: flex;
+        margin: 10px;
+        justify-content: space-between;
+        width: 350px;
+    }
+    .divLink {
+        display: flex;
+        justify-content: space-between;
+    }
+    .footer{
+      margin-top: 20px;
+    }
+
+</style>
+
+<div class="contanier">
+    <label> Olá {{name}}! Tudo bem?</label>
+
+    <h3>{{title}}</h3>
+    <br/>
+    <strong>{{description}}</strong>
+    <div class="info">
+        <p><strong>Email: </strong>{{email}}</p>
+         <p><strong>password: </strong>{{password}}</p>
+    </div>
+
+    <div class="divLink">
+        <a class="link" href="{{link}}" >Realizar login no sistema</a>
+    </div>
+
+    <br/>
+    <br/>
+  <div class="footer">
+      <strong> Sua colaboração é muito importante para nós</strong>
+      <h3>Equipe | <strong> IEQ-CENTENARIO </strong></h3>
+  </div>
+</div>

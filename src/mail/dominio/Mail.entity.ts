@@ -1,8 +1,7 @@
-import { ObjectID, ObjectIdColumn } from "typeorm";
-import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
+import { Column, CreateDateColumn, Entity, ObjectID, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
-@Entity("mails")
+@Entity('mails')
 class Mail {
   @ObjectIdColumn()
   _id: ObjectID;
@@ -22,13 +21,7 @@ class Mail {
   @Column()
   response: string;
 
-  @Column(
-    // {
-    // type: "enum",
-    // enum: ["envio_email"],
-    // default: "envio_email"
-// }
-)
+  @Column()
   type: string;
 
   @CreateDateColumn()
@@ -42,3 +35,4 @@ class Mail {
 }
 
 export { Mail };
+
