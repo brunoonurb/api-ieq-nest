@@ -15,4 +15,9 @@ export class AuthLoginQuery {
 
   @ApiProperty()
   token: string;
+
+  constructor(user: IPayloadQuery, token: string) {
+    this.user = user;
+    this.token = token;
+  }
 }

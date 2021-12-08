@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailModule } from 'src/mail/Mail.module';
 import { UsersRepository } from 'src/user/infra/repository/monngoDb/Users.repository';
 import { AuthController } from './aplicacao/controller/auth.controller';
 import { AuthService } from './aplicacao/service/auth.service';
@@ -12,6 +13,7 @@ require('dotenv').config();
 
 @Module({
   imports: [
+    MailModule,
     PassportModule,
     HttpModule,
     JwtModule.register({
