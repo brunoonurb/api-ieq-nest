@@ -84,7 +84,7 @@ export class UserController {
   }
 
   @Delete('/:id')
-  @ApiOperation({ summary: 'Register user' })
+  @ApiOperation({ summary: 'Delete user' })
   async delete(@Param('id') id: string) {
     return this.service.delete(id);
   }

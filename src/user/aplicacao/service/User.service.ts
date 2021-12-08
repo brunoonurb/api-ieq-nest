@@ -2,6 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Pagination } from 'src/core/pagination/Pagination';
 import { PaginationOptions } from 'src/core/pagination/Pagination.options';
 import { Crypt } from 'src/core/utils/Crypt';
+import { MailService } from 'src/mail/aplicacao/service/Mail.service';
+import {
+  IContextRegisterUserCommand
+} from 'src/mail/dominio/command/IContextRegisterUser.command';
+import { SendMailCommand } from 'src/mail/dominio/command/SendMaill.command';
 import { UpdateUserCommand } from 'src/user/dominio/command/UpdateUser.command';
 import { User } from 'src/user/dominio/user.entity';
 import { CreateUserCommand } from '../../dominio/command/CreateUser.command';
@@ -9,7 +14,10 @@ import { UsersRepository } from '../../infra/repository/monngoDb/Users.repositor
 
 @Injectable()
 export class UserService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly mailService: MailService,
+  ) {}
 
   async list(pageOptions: PaginationOptions): Promise<Pagination<User>> {
     const [data, totalRecords] = await this.usersRepository.list(pageOptions);
@@ -29,20 +37,19 @@ export class UserService {
   }
 
   async create(createUser: CreateUserCommand): Promise<any> {
-    const userAlreadyExists = await this.usersRepository.searchByEmail(
-      createUser.email,
-    );
+    const { email, password, ...restUser } = createUser;
+    const userAlreadyExists = await this.usersRepository.searchByEmail(email);
 
     if (userAlreadyExists) {
       throw new HttpException('Usário já existente', HttpStatus.CONFLICT);
     }
 
     const crypt = new Crypt();
-    const { password, ...restUser } = createUser;
-    const passwordHash = await crypt.hash(createUser.password, 10);
+    const passwordHash = await crypt.hash(password, 10);
 
     const user = {
       password: passwordHash,
+      email,
       ...restUser,
     };
     const result = await this.usersRepository.include(user);
@@ -53,6 +60,25 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    const context = {
+      name: 'bruno',
+      title: 'Seja Bem Vindo',
+      description: 'Esse email foi cadastrado no sistema IEQ-CENTENARIO!',
+      password: password,
+      email: email,
+      link: process.env.URL_WELCOME,
+    };
+
+    const sendEmailCommand = new SendMailCommand<IContextRegisterUserCommand>(
+      email,
+      'Email Casdastrado no sistema IEQ-CENTENARIO',
+      './welcomeMail',
+      context,
+    );
+
+    const resultSendEmail = this.mailService.sending(sendEmailCommand);
+
     return result;
   }
 
@@ -122,4 +148,5 @@ export class UserService {
     }
     throw new HttpException('Usuário excluido com sucesso', HttpStatus.OK);
   }
+
 }
