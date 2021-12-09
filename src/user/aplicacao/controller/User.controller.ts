@@ -2,20 +2,27 @@ import {
   Body,
   Controller,
   Delete,
-  Get, Param,
+  Get,
+  Param,
   Post,
   Put,
   Query,
   Request,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { ExceptionQuery } from 'src/core/exeptionFilters/query/Exception.query';
 import { PaginationDto } from 'src/core/pagination/dto/Pagination.dto';
 import { Pagination } from 'src/core/pagination/Pagination';
 import { PaginationOptions } from 'src/core/pagination/Pagination.options';
 import { RequestDto } from 'src/core/request/DTO/Request.dto';
+import { ResetPasswordCommand } from 'src/user/dominio/command/resetPassword.command';
 import { UpdateUserCommand } from 'src/user/dominio/command/UpdateUser.command';
 import { User } from 'src/user/dominio/user.entity';
 import { CreateUserCommand } from '../../dominio/command/CreateUser.command';
@@ -87,5 +94,15 @@ export class UserController {
   @ApiOperation({ summary: 'Delete user' })
   async delete(@Param('id') id: string) {
     return this.service.delete(id);
+  }
+
+  @Put('/:id/resetPassword')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'reset Password user' })
+  async resetPassword(
+    @Param('id') id: string,
+    @Body() resetPasswordCommand: ResetPasswordCommand,
+  ) {
+    return this.service.resetPassword(id, resetPasswordCommand);
   }
 }

@@ -7,6 +7,7 @@ import {
   IContextRegisterUserCommand
 } from 'src/mail/dominio/command/IContextRegisterUser.command';
 import { SendMailCommand } from 'src/mail/dominio/command/SendMaill.command';
+import { ResetPasswordCommand } from 'src/user/dominio/command/resetPassword.command';
 import { UpdateUserCommand } from 'src/user/dominio/command/UpdateUser.command';
 import { User } from 'src/user/dominio/user.entity';
 import { CreateUserCommand } from '../../dominio/command/CreateUser.command';
@@ -57,7 +58,7 @@ export class UserService {
     if (!result) {
       throw new HttpException(
         'Não possível cadastrar usuário',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -114,8 +115,8 @@ export class UserService {
 
     if (!result) {
       throw new HttpException(
-        'Não possível cadastrar usuário',
-        HttpStatus.NOT_FOUND,
+        'Não foi possível atualizar usuário',
+        HttpStatus.BAD_REQUEST,
       );
     }
     return result;
@@ -143,10 +144,39 @@ export class UserService {
     if (!result) {
       throw new HttpException(
         'Não possível excluir usuário',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
       );
     }
     throw new HttpException('Usuário excluido com sucesso', HttpStatus.OK);
+  }
+
+  async resetPassword(id: string, resetPasswordUser: ResetPasswordCommand): Promise<any> {
+    const userAlreadyExists = await this.usersRepository.search(id);
+
+    if (!userAlreadyExists) {
+      throw new HttpException('Usário não encotrado', HttpStatus.NOT_FOUND);
+    }
+
+    const crypt = new Crypt();
+    const { password } = resetPasswordUser;
+
+      const passwordHash = await crypt.hash(password, 10);
+      resetPasswordUser.password = passwordHash;
+    
+    const updateUserMerge = this.usersRepository.mergeCuston(
+      userAlreadyExists,
+      resetPasswordUser,
+    );
+
+    const result = await this.usersRepository.alter(updateUserMerge);
+
+    if (!result) {
+      throw new HttpException(
+        'Não possível alterar senha',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return result;
   }
 
 }
