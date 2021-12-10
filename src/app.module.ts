@@ -16,7 +16,7 @@ import { UserModule } from './user/User.module';
 
 @Module({
   imports: [
-    MailModule,
+    // MailModule,
     AuthModule,
     UserModule,
     ConfigModule.forRoot(),
