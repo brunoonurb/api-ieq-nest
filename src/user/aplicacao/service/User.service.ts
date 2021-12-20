@@ -7,7 +7,7 @@ import {
   IContextRegisterUserCommand
 } from 'src/mail/dominio/command/IContextRegisterUser.command';
 import { SendMailCommand } from 'src/mail/dominio/command/SendMaill.command';
-import { ResetPasswordCommand } from 'src/user/dominio/command/resetPassword.command';
+import { ResetPasswordCommand } from 'src/user/dominio/command/ResetPassword.command';
 import { UpdateUserCommand } from 'src/user/dominio/command/UpdateUser.command';
 import { User } from 'src/user/dominio/user.entity';
 import { CreateUserCommand } from '../../dominio/command/CreateUser.command';

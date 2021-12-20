@@ -22,7 +22,7 @@ import { PaginationDto } from 'src/core/pagination/dto/Pagination.dto';
 import { Pagination } from 'src/core/pagination/Pagination';
 import { PaginationOptions } from 'src/core/pagination/Pagination.options';
 import { RequestDto } from 'src/core/request/DTO/Request.dto';
-import { ResetPasswordCommand } from 'src/user/dominio/command/resetPassword.command';
+import { ResetPasswordCommand } from 'src/user/dominio/command/ResetPassword.command';
 import { UpdateUserCommand } from 'src/user/dominio/command/UpdateUser.command';
 import { User } from 'src/user/dominio/user.entity';
 import { CreateUserCommand } from '../../dominio/command/CreateUser.command';
