@@ -6,6 +6,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SchoolMemberModule } from './bibleSchool/SchoolMember.module';
 import { AuthModule } from './core/auth/auth.module';
 import { BadRequestExceptionFilter } from './core/exeptionFilters/BadRequestException.filter';
 import { HttpExceptionFilter } from './core/exeptionFilters/HttpException.filter';
@@ -18,6 +19,7 @@ import { UserModule } from './user/User.module';
   imports: [
     AuthModule,
     UserModule,
+    SchoolMemberModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
